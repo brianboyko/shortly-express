@@ -2,20 +2,30 @@ var db = require('../config');
 var crypto = require("crypto");
 var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
+var util = require('../../lib/utility.js');
 
 var User = db.Model.extend({
   tableName: 'users',
   hasTimestamps: false,
-  // initialize: function() {
-  //   this.on('creating', function(model, attrs, options) {
-  //     console.log("attrs", attrs, "models/user.js line 11");
-  //     bcrypt.hash(attrs.hashpass, 8, null, function(err, hash) {
-  //       model.set('username', attrs.username);
-  //       model.set('hashpass', hash);
-  //       console.log("username", attrs.username, "hash", hash, "models/user.js line 15");
-  //     });
-  //   });
-  // }
+  initialize: function() {
+    console.log("this", this, "inside the init user model");
+
+    var credentials = this.attributes;
+    util.encryptPass(credentials.hashpass, function(hash){
+      credentials.hashpass = hash;
+    })
+    this.set('username', credentials.username);
+    this.set('hashpass', credentials.hashpass);
+    console.log('credentials', credentials);
+
+    // this.set('username', this.attributes.username);
+    // var hashPass = util.encryptPass(this.attributes.hashpass, function(hash){
+    //   console.log("inside callback", hash);
+    //   return hash
+    // });
+    // console.log("outide callback", hash);
+    // this.set('hashpass', hashPass);
+  }
 });
 
 module.exports = User;

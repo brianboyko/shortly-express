@@ -88,17 +88,11 @@ function(req, res) {
   res.render('signup'); ///
 });
 
-
-app.post('/signup',
-function(req, res) {
-
-
 app.post('/signup',
   function(req, res) {
-    util.encryptPass(req.body.password, function(hash) {
       var user = new User({
         username: req.body.username,
-        hashpass: hash
+        hashpass: req.body.password
       });
       console.log('user', user);
       user.save().then(function(newUser) {
@@ -106,7 +100,7 @@ app.post('/signup',
         console.log("newUser", newUser, "shortly.js line 103");
       });
     });
-  });
+
 
 
 /************************************************************/
