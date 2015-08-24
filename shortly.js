@@ -23,24 +23,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/', 
+app.get('/',
 function(req, res) {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create',
 function(req, res) {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links',
 function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
 });
 
-app.post('/links', 
+app.post('/links',
 function(req, res) {
   var uri = req.body.url;
 
@@ -78,6 +78,35 @@ function(req, res) {
 // Write your authentication routes here
 /************************************************************/
 
+app.get('/login',
+function(req, res) {
+  res.render('login'); // ???
+});
+
+app.get('/signup',
+function(req, res) {
+  res.render('signup'); ///
+});
+
+
+app.post('/signup',
+function(req, res) {
+
+
+app.post('/signup',
+  function(req, res) {
+    util.encryptPass(req.body.password, function(hash) {
+      var user = new User({
+        username: req.body.username,
+        hashpass: hash
+      });
+      console.log('user', user);
+      user.save().then(function(newUser) {
+        Users.add(newUser);
+        console.log("newUser", newUser, "shortly.js line 103");
+      });
+    });
+  });
 
 
 /************************************************************/
