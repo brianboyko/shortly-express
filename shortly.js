@@ -96,6 +96,7 @@ app.post('/signup',
       });
       console.log('user', user);
       user.save().then(function(newUser) {
+
         Users.add(newUser);
         console.log("newUser", newUser, "shortly.js line 103");
       });

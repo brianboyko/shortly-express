@@ -1,22 +1,48 @@
 var db = require('../config');
 var crypto = require("crypto");
-var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
+var bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'));
 var util = require('../../lib/utility.js');
 
 var User = db.Model.extend({
   tableName: 'users',
   hasTimestamps: false,
   initialize: function() {
-    console.log("this", this, "inside the init user model");
 
-    var credentials = this.attributes;
-    util.encryptPass(credentials.hashpass, function(hash){
-      credentials.hashpass = hash;
-    })
-    this.set('username', credentials.username);
-    this.set('hashpass', credentials.hashpass);
-    console.log('credentials', credentials);
+
+    this.on('creating', function(model, attrs, options){
+      var hash = bcrypt.hash(model.get('hashpass'), 10)
+          .then(function(hash){
+            model.set('hashpass', hash);
+          });
+    });
+
+
+
+
+
+    // var entry = this;
+
+    // var hash = function(credentials){
+    //   return bcrypt.genSaltAsync(10).then(function(result){
+    //     return bcrypt.hashAsync(credentials.hashpass, result, null)
+    //     .then(function(result){
+    //       return result})
+    //   })
+    // }
+
+    // console.log("this", this, "inside the init user model");
+    //   credentials.hashpass = hash(credentials);
+    //   console.log('credentials', credentials);
+      // model.set('username', credentials.username);
+      // model.set('hashpass', credentials.hashpass);
+
+
+
+
+
+
+
 
     // this.set('username', this.attributes.username);
     // var hashPass = util.encryptPass(this.attributes.hashpass, function(hash){
