@@ -25,11 +25,14 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/',
 function(req, res) {
+  // create anonymous session
   res.render('index');
 });
 
 app.get('/create',
 function(req, res) {
+  // if session doesn't exist (user is not logged in)
+  // redirect to login
   res.render('index');
 });
 
@@ -91,33 +94,33 @@ function(req, res) {
 app.post('/signup',
   function(req, res) {
 
-      //handle existing users
-      if(!User.checkUser(req.body.username)) {
-        console.log("user doesnt exist");
-        var user = new User({
+    /* NEW PSEUDOCODE */
+    // Take in request username and password
+    // perform a fetch on username in the db
+    // if user exists, redirect to /login route
+    // if user does not exist, create a new User,  and add that user to the db.
+    // create a session on get request
+    // associate that session with this user ID
+    var userRecord = db.knex('users').where('username', req.body.username).then(function (userRecord){
+    console.log("user record length", userRecord.length);
+    if(!userRecord.length){
+          console.log("Adding user", req.body.username, "Pass", req.body.password)
+      var user = new User({
           username: req.body.username,
           hashpass: req.body.password
+          });
+      user.save().then(function(user){
+        Users.add(user);
       });
-
-    } else {
-      console.log('user exists');
     }
+  });
+});
 
-      // console.log('user', user);
-
-      try {
-      user.save().then(function(newUser) {
-
-        Users.add(newUser);
-        // console.log("newUser", newUser, "shortly.js line 103");
-      });
-    } catch (e){
-      console.log('exception handling: ', e);
-    }
-    });
-
-
-
+app.get('/logout',
+function(req, res) {
+  console.log("you pressed logout!");
+  // log user out by deleting the session ID
+});
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
 // assume the route is a short code and try and handle it here.
