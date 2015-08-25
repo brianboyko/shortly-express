@@ -36,13 +36,20 @@ module.exports = User;
 
 User.checkUser = function(username){
 
-  var userRecord = db.knex('users').select('id')();
-           // .where({
-           //  username: username
-           //  })
-           // .select('id');
-  console.log(userRecord);
-  return userRecord;
+
+
+  console.log(db.knex.raw('select * from users'), "LOOK HERE!");
+
+//this gives an accurate description of what's happening with knex
+//  https://github.com/tgriesser/knex/issues/29
+
+  // var userRecord = db.knex('users').select('id')();
+  //          // .where({
+  //          //  username: username
+  //          //  })
+  //          // .select('id');
+  // console.log(userRecord);
+  // return userRecord;
 
 
 //   // if(model.get('username', username)){

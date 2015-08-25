@@ -93,6 +93,7 @@ app.post('/signup',
 
       //handle existing users
       if(!User.checkUser(req.body.username)) {
+        console.log("user doesnt exist");
         var user = new User({
           username: req.body.username,
           hashpass: req.body.password
@@ -102,13 +103,13 @@ app.post('/signup',
       console.log('user exists');
     }
 
-      console.log('user', user);
+      // console.log('user', user);
 
       try {
       user.save().then(function(newUser) {
 
         Users.add(newUser);
-        console.log("newUser", newUser, "shortly.js line 103");
+        // console.log("newUser", newUser, "shortly.js line 103");
       });
     } catch (e){
       console.log('exception handling: ', e);
