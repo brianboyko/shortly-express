@@ -90,16 +90,29 @@ function(req, res) {
 
 app.post('/signup',
   function(req, res) {
-      var user = new User({
-        username: req.body.username,
-        hashpass: req.body.password
+
+      //handle existing users
+      if(!User.checkUser(req.body.username)) {
+        var user = new User({
+          username: req.body.username,
+          hashpass: req.body.password
       });
+
+    } else {
+      console.log('user exists');
+    }
+
       console.log('user', user);
+
+      try {
       user.save().then(function(newUser) {
 
         Users.add(newUser);
         console.log("newUser", newUser, "shortly.js line 103");
       });
+    } catch (e){
+      console.log('exception handling: ', e);
+    }
     });
 
 
