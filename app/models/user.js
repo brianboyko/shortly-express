@@ -38,8 +38,8 @@ User.checkUser = function(username){
 
 //  console.log(db.knex.raw('select * from users'), "LOOK HERE!");
 // db.knex returns a promise object!
-var userRecord = db.knex('users').where({'username': username}).then(function (userRecord){
-console.log("user record: ", userRecord);
+var userRecord = db.knex('users').where('username', username).then(function (userRecord){
+console.log("user record length", userRecord.length);
   return true;
 });
 

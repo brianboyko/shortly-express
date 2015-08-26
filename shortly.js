@@ -2,6 +2,8 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var bcrypt = require('bcrypt-nodejs');
+var Promise = require('bluebird');
 
 
 var db = require('./app/config');
@@ -90,6 +92,49 @@ app.get('/signup',
 function(req, res) {
   res.render('signup'); ///
 });
+
+
+var sessions = {};
+
+app.post('/login',
+  function(req, res){
+    console.log(req.body, "the request object");
+    //get the username and password.
+
+
+    //get the username from the database
+    db.knex('users').where('username', req.body.username).then(function(userRecord){
+      //if it doesnt exist in the db
+      if(userRecord.length === 0 || userRecord == undefined) {
+        //redirect them to the signup page
+        res.redirect('/signup');
+      } else {
+        //if it does exist
+        //hash the inputted password
+        //compare the db hashpass and the hashed inputted-password
+        if(bcrypt.compareSync(req.body.password, userRecord[0].hashpass)) {
+          //add the user id and the identifier to the existing session
+          //in-memory session creation (not using cookies)
+          console.log("password matched!");
+          var userID = userRecord[0].id;
+          var sessionID = '45';
+          sessions[sessionID] = {id: sessionID, userId: userID};
+          res.send({ 'token': sessionID});
+
+        } else {
+          console.log("password doesn't match");
+          //if no match,
+          //clear the inputs and print password doesnot match to the page
+          res.redirect('/login');
+        }
+
+      }
+    });
+
+
+
+
+  });
 
 app.post('/signup',
   function(req, res) {
