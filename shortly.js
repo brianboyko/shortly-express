@@ -119,7 +119,7 @@ app.post('/login',
           var userID = userRecord[0].id;
           var sessionID = '45';
           sessions[sessionID] = {id: sessionID, userId: userID};
-          res.send({ 'token': sessionID});
+          res.session({ 'token': sessionID});
 
         } else {
           console.log("password doesn't match");
